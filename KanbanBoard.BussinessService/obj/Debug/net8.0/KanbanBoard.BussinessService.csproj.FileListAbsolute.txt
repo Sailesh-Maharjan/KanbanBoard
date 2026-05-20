@@ -1,0 +1,17 @@
+D:\KanbanBoard\KanbanBoard.BussinessService\bin\Debug\net8.0\KanbanBoard.BussinessService.deps.json
+D:\KanbanBoard\KanbanBoard.BussinessService\bin\Debug\net8.0\KanbanBoard.BussinessService.runtimeconfig.json
+D:\KanbanBoard\KanbanBoard.BussinessService\bin\Debug\net8.0\KanbanBoard.BussinessService.dll
+D:\KanbanBoard\KanbanBoard.BussinessService\bin\Debug\net8.0\KanbanBoard.BussinessService.pdb
+D:\KanbanBoard\KanbanBoard.BussinessService\bin\Debug\net8.0\KanbanBoard.DataAccess.dll
+D:\KanbanBoard\KanbanBoard.BussinessService\bin\Debug\net8.0\KanbanBoard.DataAccess.pdb
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.csproj.AssemblyReference.cache
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.GeneratedMSBuildEditorConfig.editorconfig
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.AssemblyInfoInputs.cache
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.AssemblyInfo.cs
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.csproj.CoreCompileInputs.cache
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBo.ED1DE41D.Up2Date
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.dll
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\refint\KanbanBoard.BussinessService.dll
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.pdb
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\KanbanBoard.BussinessService.genruntimeconfig.cache
+D:\KanbanBoard\KanbanBoard.BussinessService\obj\Debug\net8.0\ref\KanbanBoard.BussinessService.dll

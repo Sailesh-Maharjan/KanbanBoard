@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Real-Time Kanban Board</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0px;
+            margin: 0px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+        }
+
+        body {
+            background-color: #0079bf;
+            min-height: 100vh;
+            color: #172b4d;
+        }
+
+        header {
+            background: rgba(0,0,0,0.2);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+            header input, header button, header select {
+                padding: 6px 10px;
+                border: 0px;
+                border-radius: 4px;
+            }
+
+            header button {
+                background: #5aac44;
+                color: white;
+                cursor: pointer;
+            }
+
+            header select {
+                min-width: 200px;
+                cursor: pointer;
+            }
+
+            header button:hover {
+                background: #519839;
+            }
+
+        #status {
+            margin-left: auto;
+            font-size: 14px;
+        }
+
+        #onlineUsers {
+            display: flex;
+            gap: 6px;
+        }
+
+        .user-pill {
+            background: green;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        #board {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            min-height: calc(100vh - 60px);
+            align-items: start;
+        }
+
+        .column {
+            background: #ebecf0;
+            border-radius: 6px;
+            width: 280px;
+            min-width:280px;
+            padding: 8px;
+        }
+
+        .column h3{
+            padding: 6px;
+            display:flex;
+            justify-content: space-between;
+        }
+
+/*        .column h3 button{
+            background: transparent;
+            border:0;
+            cursor: pointer;
+            font-size: 10px;
+        }
+*/
+
+      .cards{
+          min-height: 30px;
+      }
+
+      .card{
+          background : white;
+          border-radius: 4px;
+          padding: 8px 10px;
+          margin: 6px 0px;
+          cursor: grab;
+      }
+/*
+        .card.meta {
+            font-size: 11px;
+            color: #5e6c84;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+*/
+
+/*        .add-card {
+            background: transparent;
+            border: 0;
+            color: #5e6c84;
+            padding: 6px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            border-radius: 4px;
+        }*/
+
+        .add-card:hover {
+            background: #dadbe2;
+            color: #172b4d;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <strong>📋 Kanban Board</strong>
+        <!--  <button id="createBtn" style="background: #ff6a00">+ Create Board</button>-->
+        <!--<input id="boardId" type="number" placeholder="Board ID" style="width:90px"/>-->
+        <select id="boardSelect">
+            <option value="">- Select Available Boards -</option>
+        </select>
+        <input id="username" type="text" placeholder="Enter Your Name" />
+        <button id="joinBtn">Join Board</button>
+        <button id="newColumnBtn" style="background:#4800ff">+ Column</button>
+        <span id="status">Disconnected</span>
+        <div id="onlineUsers"></div>
+    </header>
+    <div id="board"></div>
+
+    <footer> <span style="color:white;">&copy; <span id="currentYear"></span> Developed By Sailesh Maharjan </span></footer>
+
+    <script src="/js/signalr.js"></script>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            loadBoards();
+
+        });
+
+        async function loadBoards() {
+            try {
+                const res = await fetch('/api/Board');
+                if (!res.ok) {
+                    throw new Error('Failed to fetch boards');
+                }
+                const boards = await res.json();
+                populateBoardDropdown(boards);
+            }
+            catch (error) {
+                console.error('could not load boards: ', error);
+            }
+        }
+
+        function populateBoardDropdown(boards, selectedId = null) {
+
+            const select = document.getElementById('boardSelect');
+            select.innerHTML = '<option value="">-- Select Available Boards --</option>';
+            boards.forEach(x => {
+                const opt = document.createElement('option');
+                opt.value = x.id;
+                opt.textContent = x.name;
+                select.appendChild(opt);
+            });
+            if (selectedId) {
+                select.value = selectedId;
+            }
+
+        }
+
+        let connection = null;
+        let boardState = null;
+        let currentBoardId = null;
+        let currentUser = null;
+
+        document.querySelector('#joinBtn').addEventListener('click', joinBoard);
+        document.querySelector('#newColumnBtn').addEventListener('click', addColumn);
+
+        async function joinBoard() {
+            const selectedBoardIdText = document.querySelector('#boardSelect').value;
+            const username = document.querySelector('#username').value.trim();
+
+            if (!selectedBoardIdText) {
+                alert('Please Select Available Board');
+                return;
+            }
+
+            if (!username) {
+                alert('Please Enter Username');
+                return;
+            }
+
+            if (connection) {
+                try {
+                    await connection.invoke('LeaveBoard', currentBoardId);
+                }
+                catch (error) {
+                    console.warn('LeaveBoard Failed:', error);
+                }
+
+                await connection.stop();
+                connection = null;
+                boardState = null;
+            }
+
+            const selectedBoardId = parseInt(selectedBoardIdText);
+            currentBoardId = selectedBoardId;
+            currentUser = username;
+
+
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl('/kanbanHub')
+                .withAutomaticReconnect()
+                .build();
+
+            registerHandlers();
+
+            try {
+                await connection.start();
+                await connection.invoke('JoinBoard', selectedBoardId, username);
+                document.getElementById('status').textContent = '🟢 Connected';
+            }
+            catch (error) {
+                console.error('Connection error:', error);
+                document.getElementById('status').textContent = '🔴 Error';
+            }
+
+        }
+
+        function registerHandlers() {
+            connection.on("BoardLoaded", (board) => {
+                console.log("BOARD RECEIVED:", board);
+                boardState = board;
+                renderBoard();
+            });
+            connection.on("CardCreated", (card) => {
+                const col = boardState.columns.find(c => c.id === card.columnId);
+                if (col) {
+                    col.cards.push(card);
+                    renderBoard();
+                }
+            });
+
+            connection.on("CardUpdated", (updatedCard) => {
+                for (const col of boardState.columns) {
+                    const index = col.cards.findIndex((c) => c.id === updatedCard.cardId)
+                    if (index >= 0) {
+                        col.cards[index] = updatedCard;
+                        break;
+                    }
+                }
+                renderBoard();
+            });
+
+            connection.on("ColumnCreated", (col) => {
+                if (!col.cards) col.cards = [];
+                boardState.columns.push(col);
+                renderBoard();
+            });
+
+            connection.on("ColumnDeleted", (colId) => {
+                boardState.columns = boardState.columns.filter(c => c.id != colId);
+                renderBoard();
+            });
+
+            connection.on("CardDeleted", (cardId) => {
+                for (const col of boardState.columns) {
+                    col.cards = col.cards.filter((c) => c.id != cardId);
+                }
+                renderBoard();
+            });
+
+            connection.on("CardMoved", (card) => {
+                for (const col of boardState.columns) {
+                    col.cards = col.cards.filter((c) => c.id != card.id);
+                }
+                const targetColumn = boardState.columns.find(c => c.id === card.columnId);
+                if (targetColumn) {
+                    targetColumn.cards.push(card);
+                }
+                renderBoard();
+            });
+
+            connection.on("OnlineUsersUpdated", (users) => {
+                document.getElementById("onlineUsers").innerHTML = users.map((u) => `<span class= "user-pill">${u}</span>`).join("");
+            });
+
+            connection.on("UserJoined", (u) => console.log(u + " joined"));
+            connection.on("UserLeft", (u) => console.log(u + " left"));
+        }
+
+        function renderBoard() {
+            { }
+            const root = document.getElementById('board');
+            root.innerHTML = '';
+            boardState.columns.sort((a, b) => a.order - b.order).forEach(col => {
+                const colEl = document.createElement('div');
+                colEl.className = 'column';
+                colEl.dataset.columnId = col.id;
+                colEl.innerHTML = `
+                                                                                                                                <h3>${escapeHtml(col.title)} <button data-del-col="${col.id}">🗑</button></h3>
+                                                                                                                                <div class="cards"></div>
+                                                                                                                                <button class="add-card" data-add-card="${col.id}">+ Add a card</button>`;
+                const cardsEl = colEl.querySelector('.cards');
+
+
+                col.cards.sort((a, b) => a.order - b.order).forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'card';
+                    cardEl.draggable = true;
+                    cardEl.dataset.cardId = card.id;
+                    cardEl.innerHTML = `
+                                                                                                                                    <div>${escapeHtml(card.title)}</div>
+                                                                                                                                    <div class="meta">
+                                                                                                                                        <span>${card.assignedTo ? '👤 ' + escapeHtml(card.assignedTo) : ''}</span>
+                                                                                                                                        <span><button data-edit="${card.id}">✏️</button> <button data-del="${card.id}">🗑</button></span>
+                                                                                                                                    </div>`;
+                    attachDrag(cardEl, card);
+                    cardsEl.appendChild(cardEl);
+                });
+                attachDrop(cardsEl, col.id);
+                root.appendChild(colEl);
+            });
+
+            //Bind Events
+            // Add card
+            root.querySelectorAll("[data-add-card]").forEach((b) => {
+                b.addEventListener("click", () => {
+                    addCard(parseInt(b.dataset.addCard));
+                });
+            });
+
+            // Delete card
+            root.querySelectorAll("[data-del]").forEach((b) => {
+                b.addEventListener("click", () => {
+                    connection.invoke(
+                        "DeleteCard",
+                        currentBoardId,
+                        parseInt(b.dataset.del)
+                    );
+                });
+            });
+
+            // Edit card
+            root.querySelectorAll("[data-edit]").forEach((b) => {
+                b.addEventListener("click", () => {
+                    editCard(parseInt(b.dataset.edit));
+                });
+            });
+
+            // Delete column
+            root.querySelectorAll("[data-del-col]").forEach((b) => {
+                b.addEventListener("click", () => {
+                    if (confirm("Delete column?")) {
+                        connection.invoke(
+                            "DeleteColumn",
+                            currentBoardId,
+                            parseInt(b.dataset.delCol)
+                        );
+                    }
+                });
+            });
+        }
+
+        function addCard(columnId) {
+            const title = prompt("Card title?"); // works like small pop up in browser
+            if (!title) return;
+            connection.invoke("CreateCard", currentBoardId, {
+                columnId,
+                title: title,
+                description: "",
+                assignedTo: currentUser,
+            });
+        }
+
+        function editCard(cardId) {
+            let card = null;
+            for (const c of boardState.columns) {
+                card = c.cards.find((cc) => cc.id === cardId);
+                if (card) break;
+            }
+            if (!card) return;
+            const title = prompt("Title:", card.title);
+            if (title === null) return;
+            const desc = prompt("Description:", card.description || "");
+            const assigned = prompt("Assigned to:", card.assignedTo || "");
+            connection.invoke("UpdateCard", currentBoardId, {
+                id: card.id,
+                columnId: card.columnId,
+                order: card.order,
+                title: title,
+                description: desc,
+                assignedTo: assigned
+            });
+        }
+
+        function addColumn() {
+            if (!connection) return alert("Join a board first");
+            const title = prompt("Column title?");
+            if (!title) return;
+            connection.invoke("CreateColumn", currentBoardId, {
+                boardId: currentBoardId,
+                title: title,
+                order: 0,
+            });
+        }
+
+        let draggedCard = null;
+
+        function attachDrag(el, card) {
+            el.addEventListener('dragstart', (e) => {
+                draggedCard = card;
+                el.classList.add("dragging");
+            });
+        }
+
+        function attachDrop(zone, columnId) {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault(); // very imp as it prevent broswer default baheviour and provide access to use custom dragover and drop.
+                zone.classList.add("drag-over");
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+
+                if (!draggedCard) {
+                    return;
+                }
+
+                const newOrder = zone.children.length;
+                connection.invoke('MoveCard', currentBoardId, {
+                    cardId: draggedCard.id,
+                    newColumnId: columnId,
+                    newOrder: newOrder
+                });
+
+                zone.classList.remove("drag-over");
+                draggedCard = null;
+            });
+        }
+
+
+        function escapeHtml(t) {
+            return (t ?? "")
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
