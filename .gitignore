@@ -2,3 +2,10 @@
 **/bin/
 **/obj/
 .vs/
+
+# Visual Studio files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
