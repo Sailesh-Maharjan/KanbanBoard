@@ -33,9 +33,28 @@ A real-time collaborative Kanban board built with ASP.NET Core 8 and SignalR Web
 
 <h2>🧐 Features</h2>
 
+Here're some of the project's best features:
 
----
+*   Real-time collaboration using ASP.NET Core SignalR (WebSockets), where all card actions (create, update, move, delete) are instantly synced across users via board based SignalR groups (board-{id}), with no page refresh required.
+*   Drag and drop card management using JavaScript events (dragstart, dragover, drop) with proper ordering logic to maintain correct card sequence.
+*  Dynamic board selection via dropdown that auto loads available boards from the REST API.
+*   The application is deployed on Render for Production.
 
-<h2>📄 License</h2>
+### System Architecture
+   ![SystemArchitecture](Screenshots/block-diagram.png) 
+   
+<h2>💻 Built with</h2>
 
-This project is licensed under the MIT License.
+Technologies used in the project:
+
+*   .NET 8 Web API
+*   ASP.NET Core SignalR
+*   Entity Framework Core
+*   PostgreSQL (Render Managed)
+*   HTML
+*   CSS
+*   Vanilla JavaScript
+*   Render Platform (Deployment)
+*   Docker
+
+  <h2>Project Screenshots:</h2>
