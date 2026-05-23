@@ -1,16 +1,14 @@
 <h1 align="center" id="title">Real-Time Collaborative Kanban Board (.NET 8 + SignalR + PostgreSQL)</h1>
 
-<p align="center">
-  <img src="https://socialify.git.ci/YOUR_GITHUB_USERNAME/KanbanBoard/image?description=1&font=Inter&language=1&name=1&pattern=Solid&theme=Dark" alt="project-image" />
-</p>
+
+
 
 <p id="description">
-A production-ready real-time collaborative Kanban board built with ASP.NET Core 8 and SignalR WebSockets. Multiple users can join the same board simultaneously — creating, editing, dragging, and reordering cards — with every change instantly reflected across all connected clients. Boards are dynamically loaded via a dropdown selector instead of manual ID entry. Backed by PostgreSQL on Render for persistent storage and built with clean separation of concerns across Models, DTOs, Services, Hubs, and Controllers.
+A real-time collaborative Kanban board built with ASP.NET Core 8 and SignalR WebSockets, allowing multiple users to simultaneously create, edit, drag, reorder, and manage cards with changes instantly synchronized across all connected clients. Boards are dynamically loaded through a dropdown based selection, while PostgreSQL on Render provides persistent cloud storage. The application follows a clean architecture with well organized separation of concerns using Models, DTOs, Services, Hubs, and Controllers
 </p>
 
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue)
-![SignalR](https://img.shields.io/badge/Realtime-SignalR-blueviolet)
-![WebSocket](https://img.shields.io/badge/Protocol-WebSocket-informational)
+![SignalR](https://img.shields.io/badge/WebSocket-SignalR-blueviolet)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791)
 ![EF Core](https://img.shields.io/badge/ORM-EF%20Core-orange)
 ![Render](https://img.shields.io/badge/Deployment-Render-purple)
@@ -21,13 +19,13 @@ A production-ready real-time collaborative Kanban board built with ASP.NET Core 
 <h2>🚀 Demo</h2>
 
 **Base URL:**  
-`https://your-kanbanboard.onrender.com`
+[https://your-kanbanboard.onrender.com](https://kanbanboard-cy9b.onrender.com/)
 
 **Swagger Documentation:**  
-`https://your-kanbanboard.onrender.com/swagger`
+[`https://your-kanbanboard.onrender.com/swagger`](https://kanbanboard-cy9b.onrender.com/swagger/index.html)
 
 **SignalR Hub Endpoint:**  
-`wss://your-kanbanboard.onrender.com/kanbanHub`
+[`https://kanbanboard-cy9b.onrender.com/kanbanHub`](https://kanbanboard-cy9b.onrender.com/kanbanHub)
 
 > Open the app in at least two browser windows, join the same board, and watch changes sync in real time.
 
