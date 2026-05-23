@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <title>Real-Time Kanban Board</title>
     <style>
         * {
@@ -86,66 +90,65 @@
             background: #ebecf0;
             border-radius: 6px;
             width: 280px;
-            min-width:280px;
+            min-width: 280px;
             padding: 8px;
         }
 
-        .column h3{
-            padding: 6px;
-            display:flex;
-            justify-content: space-between;
+            .column h3 {
+                padding: 6px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+        /*        .column h3 button{
+                    background: transparent;
+                    border:0;
+                    cursor: pointer;
+                    font-size: 10px;
+                }
+        */
+
+        .cards {
+            min-height: 30px;
         }
 
-/*        .column h3 button{
-            background: transparent;
-            border:0;
-            cursor: pointer;
-            font-size: 10px;
-        }
-*/
-
-      .cards{
-          min-height: 30px;
-      }
-
-      .card{
-          background : white;
-          border-radius: 4px;
-          padding: 8px 10px;
-          margin: 6px 0px;
-          cursor: grab;
-      }
-/*
-        .card.meta {
-            font-size: 11px;
-            color: #5e6c84;
-            margin-top: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-*/
-
-/*        .add-card {
-            background: transparent;
-            border: 0;
-            color: #5e6c84;
-            padding: 6px;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
+        .card {
+            background: white;
             border-radius: 4px;
-        }*/
+            padding: 8px 10px;
+            margin: 6px 0px;
+            cursor: grab;
+        }
+        /*
+                .card.meta {
+                    font-size: 11px;
+                    color: #5e6c84;
+                    margin-top: 4px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+        */
+
+        /*        .add-card {
+                    background: transparent;
+                    border: 0;
+                    color: #5e6c84;
+                    padding: 6px;
+                    cursor: pointer;
+                    width: 100%;
+                    text-align: left;
+                    border-radius: 4px;
+                }*/
 
         .add-card:hover {
             background: #dadbe2;
             color: #172b4d;
         }
-
     </style>
 </head>
 <body>
     <header>
-        <strong>📋 Kanban Board</strong>
+        <strong>Real-Time Kanban Board</strong>
         <!--  <button id="createBtn" style="background: #ff6a00">+ Create Board</button>-->
         <!--<input id="boardId" type="number" placeholder="Board ID" style="width:90px"/>-->
         <select id="boardSelect">
@@ -162,6 +165,7 @@
     <footer> <span style="color:white;">&copy; <span id="currentYear"></span> Developed By Sailesh Maharjan </span></footer>
 
     <script src="/js/signalr.js"></script>
+    <script src="/js/bootstrap.js"></script>
     <script>
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -332,9 +336,9 @@
                 colEl.className = 'column';
                 colEl.dataset.columnId = col.id;
                 colEl.innerHTML = `
-                                                                                                                                <h3>${escapeHtml(col.title)} <button data-del-col="${col.id}">🗑</button></h3>
+                                                                                                                                <h3>${escapeHtml(col.title)} <button data-del-col="${col.id}"><i class="bi bi-trash"></i></button></h3>
                                                                                                                                 <div class="cards"></div>
-                                                                                                                                <button class="add-card" data-add-card="${col.id}">+ Add a card</button>`;
+                                                                                                                                <button class="add-card" data-add-card="${col.id}"><i class="bi bi-plus-circle"></i> Add a card</button>`;
                 const cardsEl = colEl.querySelector('.cards');
 
 
@@ -346,8 +350,8 @@
                     cardEl.innerHTML = `
                                                                                                                                     <div>${escapeHtml(card.title)}</div>
                                                                                                                                     <div class="meta">
-                                                                                                                                        <span>${card.assignedTo ? '👤 ' + escapeHtml(card.assignedTo) : ''}</span>
-                                                                                                                                        <span><button data-edit="${card.id}">✏️</button> <button data-del="${card.id}">🗑</button></span>
+                                                                                                                                        <span>${card.assignedTo ? '<i class="bi bi-person-circle" style="color: green;"></i> ' + escapeHtml(card.assignedTo) : ''}</span>
+                                                                                                                                        <span><button data-edit="${card.id}"><i class="bi bi-pencil-square"></i></button> <button data-del="${card.id}"><i class="bi bi-trash"></i></button></span>
                                                                                                                                     </div>`;
                     attachDrag(cardEl, card);
                     cardsEl.appendChild(cardEl);
