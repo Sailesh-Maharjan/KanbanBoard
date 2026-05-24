@@ -69,7 +69,7 @@ Technologies used in the project:
    
    ###  Before Drag and Drop
    ![before_drag_drop](Screenshots/before_drag_and_drop.png) 
-    ### After Drag and Drop
+   ### After Drag and Drop
    ![after_drag_drop](Screenshots/after_drag_and_drop.png)
    
    ### Swagger Documentation
