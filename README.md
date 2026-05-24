@@ -41,7 +41,7 @@ Here're some of the project's best features:
 *   The application is deployed on Render for Production.
 
 ### System Architecture
-   ![SystemArchitecture](Screenshots/block-diagram.png) 
+   ![SystemArchitecture](Screenshots/KanbanBoard_System_Architecture.png) 
    
 <h2>💻 Built with</h2>
 
@@ -58,3 +58,27 @@ Technologies used in the project:
 *   Docker
 
   <h2>Project Screenshots:</h2>
+
+   ![Single_user](Screenshots/single_user.png) 
+   ![brave_user](Screenshots/2nd_brave_user.png) 
+   
+   ### Add Card
+   ![add_card](Screenshots/adding_card_title.png) 
+   ### Edit Card   
+   ![edit_card](Screenshots/edit.png) 
+   
+   ###  Before Drag and Drop
+   ![before_drag_drop](Screenshots/before_drag_and_drop.png) 
+    ### After Drag and Drop
+   ![after_drag_drop](Screenshots/after_drag_and_drop.png 
+   
+   ### Swagger Documentation
+   ![swagger_docs](Screenshots/swagger_docs.png)
+   ![create_board](Screenshots/create_board.png)
+
+   ### Database Screenshots
+ ![board_table](Screenshots/board_table.png)
+ ![user_table](Screenshots/board_user.png) 
+ ![column_table](Screenshots/column_table.png)
+ ![card_table](Screenshots/card_table.png) 
+  
