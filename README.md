@@ -25,7 +25,7 @@ A real-time collaborative Kanban board built with ASP.NET Core 8 and SignalR Web
 [`https://your-kanbanboard.onrender.com/swagger`](https://kanbanboard-cy9b.onrender.com/swagger/index.html)
 
 **SignalR Hub Endpoint:**  
-[`https://kanbanboard-cy9b.onrender.com/kanbanHub`](https://kanbanboard-cy9b.onrender.com/kanbanHub)
+[`https://your-kanbanboard.onrender.com/kanbanHub`](https://kanbanboard-cy9b.onrender.com/kanbanHub)
 
 > Open the app in at least two browser windows, join the same board, and watch changes sync in real time.
 
